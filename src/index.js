@@ -1,75 +1,97 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
+import React, { Component } from "react";
+import './App.js';
 import './index.css';
 
-class Square extends React.Component {
-    render() {
-      return (
-        <button className="square">
-          {this.props.value}
-        </button>
-      );
-    }
+class Calculator extends Component {
+  constructor() {
+    super();
+    this.state = {
+      display: "0",
+      currentInput: "",
+      operator: null,
+      prevInput: "",
+    };
   }
-  
-  class Board extends React.Component {
-    renderSquare(i) {
-      return <Square value={i}/>;
+
+  handleDigitClick = (digit) => {
+    const { display, currentInput } = this.state;
+    if (display === "0") {
+      this.setState({ display: digit, currentInput: digit });
+    } else {
+      this.setState({
+        display: display + digit,
+        currentInput: currentInput + digit,
+      });
     }
-  
-    render() {
-      const status = 'Калькулятор';
-  
-      return (
-        <div>
-          <div className="status">{status}</div>
-          <div className="board-row">
-            {this.renderSquare(1)}
-            {this.renderSquare(2)}
-            {this.renderSquare(3)}
-            {this.renderSquare('+')}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(4)}
-            {this.renderSquare(5)}
-            {this.renderSquare(6)}
-            {this.renderSquare('-')}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(7)}
-            {this.renderSquare(8)}
-            {this.renderSquare(9)}
-            {this.renderSquare('x')}
-          </div>
-          <div className="board-row">
-            {this.renderSquare('c')}
-            {this.renderSquare(0)}
-            {this.renderSquare('=')}
-            {this.renderSquare('/')}
-          </div>
+  };
+
+  handleOperatorClick = (props) => {
+    const { currentInput, operator } = this.state;
+    if (operator === null) {
+      this.setState({ operator, prevInput: currentInput, currentInput: "" });
+    } else {
+      // Handle chained operations if needed
+    }
+  };
+
+  handleEqualsClick = () => {
+    const { prevInput, currentInput, operator } = this.state;
+    if (operator && currentInput !== "") {
+      let result;
+      switch (operator) {
+        case "+":
+          result = parseFloat(prevInput) + parseFloat(currentInput);
+          break;
+        case "-":
+          result = parseFloat(prevInput) - parseFloat(currentInput);
+          break;
+        case "*":
+          result = parseFloat(prevInput) * parseFloat(currentInput);
+          break;
+        case "/":
+          result = parseFloat(prevInput) / parseFloat(currentInput);
+          break;
+        default:
+          return;
+      }
+      this.setState({ display: result, prevInput: result, currentInput: "" });
+    }
+  };
+
+  handleClearClick = () => {
+    this.setState({
+      display: "0",
+      currentInput: "",
+      operator: null,
+      prevInput: "",
+    });
+  };
+
+  render() {
+    return (
+      <div className="calculator">
+        <div className="display">{this.state.display}</div>
+        <div className="buttons">
+          <button onClick={() => this.handleDigitClick("7")}>7</button>
+          <button onClick={() => this.handleDigitClick("8")}>8</button>
+          <button onClick={() => this.handleDigitClick("9")}>9</button>
+          <button onClick={() => this.handleOperatorClick("+")}>+</button>
+          <button onClick={() => this.handleDigitClick("4")}>4</button>
+          <button onClick={() => this.handleDigitClick("5")}>5</button>
+          <button onClick={() => this.handleDigitClick("6")}>6</button>
+          <button onClick={() => this.handleOperatorClick("-")}>-</button>
+          <button onClick={() => this.handleDigitClick("1")}>1</button>
+          <button onClick={() => this.handleDigitClick("2")}>2</button>
+          <button onClick={() => this.handleDigitClick("3")}>3</button>
+          <button onClick={() => this.handleOperatorClick("*")}>*</button>
+          <button onClick={() => this.handleDigitClick("0")}>0</button>
+          <button onClick={this.handleClearClick}>C</button>
+          <button onClick={this.handleEqualsClick}>=</button>
+          <button onClick={() => this.handleOperatorClick("/")}>/</button>
         </div>
-      );
-    }
+      </div>
+    );
   }
-  
-  class Game extends React.Component {
-    render() {
-      return (
-        <div className="game">
-          <div className="game-board">
-            <Board />
-          </div>
-          <div className="game-info">
-            <div>{/* status */}</div>
-            <ol>{/* TODO */}</ol>
-          </div>
-        </div>
-      );
-    }
-  }
-  
-  // ========================================
-  
-  const root = ReactDOM.createRoot(document.getElementById("root"));
-  root.render(<Game />);
-  
+}
+
+export default Calculator;

@@ -16,7 +16,10 @@ class Calculator extends Component {
   handleDigitClick = (digit) => {
     const { display, currentInput } = this.state;
     if (display === "0") {
-      this.setState({ display: digit, currentInput: digit.toString() });
+      this.setState({
+        display: digit,
+        currentInput: digit.toString(),
+      });
     } else {
       this.setState({
         display: currentInput + digit,
@@ -26,12 +29,37 @@ class Calculator extends Component {
   };
 
   handleOperatorClick = (newOperator) => {
-    const { currentInput, operator } = this.state;
+    const { prevInput, currentInput, operator } = this.state;
     if (operator === null) {
-      this.setState({ operator: newOperator,
-                      prevInput: currentInput,
-                      currentInput: "",
-                    });
+      this.setState({
+        operator: newOperator,
+        prevInput: currentInput,
+        currentInput: "",
+      });
+    } else {
+      let result;
+      switch (operator) {
+        case "+":
+          result = parseFloat(prevInput) + parseFloat(currentInput);
+          break;
+        case "-":
+          result = parseFloat(prevInput) - parseFloat(currentInput);
+          break;
+        case "*":
+          result = parseFloat(prevInput) * parseFloat(currentInput);
+          break;
+        case "/":
+          result = parseFloat(prevInput) / parseFloat(currentInput);
+          break;
+        default:
+          return;
+      }
+      this.setState({
+        display: result,
+        operator: newOperator,
+        prevInput: result,
+        currentInput: "",
+      })
     }
   };
 
@@ -55,9 +83,13 @@ class Calculator extends Component {
         default:
           return;
       }
-      this.setState({ display: result, prevInput: result, currentInput: "" });
+      this.setState({
+        display: result,
+        prevInput: result,
+        currentInput: "",
+        operator: null,
+      });
     }
-    console.log(display, currentInput, prevInput);
   };
 
   handleClearClick = () => {

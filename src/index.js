@@ -16,28 +16,28 @@ class Calculator extends Component {
   handleDigitClick = (digit) => {
     const { display, currentInput } = this.state;
     if (display === "0") {
-      this.setState({ display: digit, currentInput: digit });
+      this.setState({ display: digit, currentInput: digit.toString() });
     } else {
       this.setState({
-        display: parseInt(display) + parseInt(digit),
+        display: currentInput + digit,
         currentInput: currentInput + digit,
-        prevInput: digit,
       });
     }
   };
 
-  handleOperatorClick = (props) => {
+  handleOperatorClick = (newOperator) => {
     const { currentInput, operator } = this.state;
     if (operator === null) {
-      this.setState({ operator, prevInput: currentInput, currentInput: "" });
-    } else {
-      // Handle chained operations if needed
+      this.setState({ operator: newOperator,
+                      prevInput: currentInput,
+                      currentInput: "",
+                    });
     }
   };
 
   handleEqualsClick = () => {
-    const { prevInput, currentInput, operator } = this.state;
-    if (operator && currentInput !== "") {
+    const { display, prevInput, currentInput, operator } = this.state;
+    if (operator) {
       let result;
       switch (operator) {
         case "+":
@@ -57,6 +57,7 @@ class Calculator extends Component {
       }
       this.setState({ display: result, prevInput: result, currentInput: "" });
     }
+    console.log(display, currentInput, prevInput);
   };
 
   handleClearClick = () => {
